@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>walaniam.stock</groupId>
-	<artifactId>kafka.producer</artifactId>
+	<artifactId>kafka-producer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>kafka.producer</name>
 	<description>Parses stock listing and produces kafka events</description>

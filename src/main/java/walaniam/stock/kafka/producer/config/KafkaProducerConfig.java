@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
+import walaniam.stock.kafka.producer.domain.Stock;
 
 import java.util.Map;
 
@@ -18,8 +20,11 @@ public class KafkaProducerConfig {
     @Value(value = "${kafka.bootstrapAddress}")
     private String bootstrapAddress;
 
+    @Value("${kafka.topic}")
+    private String topic;
+
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
+    public ProducerFactory<String, Stock> stockProducerFactory() {
 
         Map<String, Object> configProps = ImmutableMap.of(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -27,14 +32,16 @@ public class KafkaProducerConfig {
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 StringSerializer.class,
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class
+                JsonSerializer.class
         );
 
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
-        return new KafkaTemplate<>(producerFactory);
+    public KafkaTemplate<String, Stock> kafkaTemplate(ProducerFactory<String, Stock> producerFactory) {
+        KafkaTemplate<String, Stock> template = new KafkaTemplate<>(producerFactory);
+        template.setDefaultTopic(topic);
+        return template;
     }
 }
