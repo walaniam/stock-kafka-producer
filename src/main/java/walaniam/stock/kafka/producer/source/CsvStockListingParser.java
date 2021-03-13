@@ -1,11 +1,15 @@
 package walaniam.stock.kafka.producer.source;
 
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import walaniam.stock.kafka.producer.domain.Stock;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
@@ -14,22 +18,41 @@ import java.util.function.Consumer;
 @Slf4j
 public class CsvStockListingParser {
 
+    private static final String ENCODING = "utf-8";
+
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
     private final Consumer<Stock> consumer;
 
-    public void parse(InputStream content, String encoding) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(content, encoding))) {
+    public void parse(InputStream content) {
+        try (BufferedReader reader = new BufferedReader(readEncoded(content))) {
             parseListing(reader);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void parse(File content, String encoding) {
+    public void parse(File content) {
+        log.info("Parsing {}", content);
         try (FileInputStream input = new FileInputStream(content)) {
-            parse(input, encoding);
+            parse(input);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private Reader readEncoded(InputStream input) throws IOException {
+
+        BufferedInputStream bis = new BufferedInputStream(input);
+        CharsetDetector detector = new CharsetDetector();
+        detector.setText(bis);
+        CharsetMatch charsetMatch = detector.detect();
+
+        if (charsetMatch != null) {
+            log.debug("Detected charset={}", charsetMatch.getName());
+            return charsetMatch.getReader();
+        } else {
+            log.warn("Could not autodetect charset. Default to {}", ENCODING);
+            return new InputStreamReader(input, ENCODING);
         }
     }
 
@@ -63,8 +86,9 @@ public class CsvStockListingParser {
     }
 
     private long parseDate(String column) {
-        return LocalDateTime.parse(column, formatter)
-                .toInstant(ZoneOffset.UTC)
+        return LocalDate.parse(column, formatter)
+                .atStartOfDay(ZoneOffset.UTC)
+                .toInstant()
                 .toEpochMilli();
     }
 }
