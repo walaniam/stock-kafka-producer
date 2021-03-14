@@ -55,7 +55,7 @@ public class FileLoader {
         );
         parser.parse(file);
         boolean renamed = file.renameTo(newFilename);
-        log.info("{} moved={} to {}", file, renamed, newFilename);
+        log.info("{} moved={} to {}", file.getName(), renamed, newFilename.getName());
     }
 
     @PreDestroy
