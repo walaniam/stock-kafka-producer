@@ -24,7 +24,9 @@ public class KafkaTopicConfig {
         Map<String, Object> configs = ImmutableMap.of(
                 AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress
         );
-        return new KafkaAdmin(configs);
+        KafkaAdmin admin = new KafkaAdmin(configs);
+        admin.setAutoCreate(false);
+        return admin;
     }
 
     @Bean
