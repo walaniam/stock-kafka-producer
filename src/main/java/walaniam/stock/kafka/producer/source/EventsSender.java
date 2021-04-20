@@ -16,6 +16,8 @@ public class EventsSender<T> implements Consumer<T> {
 
     @Override
     public void accept(T event) {
-        kafkaTemplate.sendDefault(keyFunction.apply(event), event);
+        String key = keyFunction.apply(event);
+        log.debug("Sending {}", key);
+        kafkaTemplate.sendDefault(key, event);
     }
 }

@@ -31,11 +31,11 @@ public class FileLoader {
         if (scheduledFuture != null) {
             throw new UnsupportedOperationException("Already scheduled");
         }
-        scheduledFuture = scheduler.scheduleAtFixedRate(this::parseAll, 15, 15, TimeUnit.SECONDS);
+        scheduledFuture = scheduler.scheduleAtFixedRate(this::parseAll, 5, 15, TimeUnit.SECONDS);
     }
 
     private void parseAll() {
-        log.debug("Loading files...");
+        log.debug("Loading files from {}", workDir);
         CompletableFuture[] parseFutures = Arrays.stream(listNotLoadedFiles())
                 .map(file -> CompletableFuture.runAsync(() -> parseAndRename(file)))
                 .toArray(size -> new CompletableFuture[size]);
