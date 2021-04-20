@@ -1,4 +1,4 @@
-package walaniam.stock.kafka.producer.domain;
+package walaniam.stock.domain;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

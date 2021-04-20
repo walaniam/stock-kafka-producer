@@ -1,7 +1,7 @@
 package walaniam.stock.kafka.producer.source;
 
 import lombok.NoArgsConstructor;
-import walaniam.stock.kafka.producer.domain.Stock;
+import walaniam.stock.domain.Stock;
 
 import java.util.function.Function;
 

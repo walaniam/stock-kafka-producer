@@ -2,7 +2,7 @@ package walaniam.stock.kafka.producer.source;
 
 
 import org.junit.jupiter.api.Test;
-import walaniam.stock.kafka.producer.domain.Stock;
+import walaniam.stock.domain.Stock;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
