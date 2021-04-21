@@ -13,10 +13,10 @@ import java.util.Map;
 @Configuration
 public class KafkaTopicConfig {
 
-    @Value("${kafka.bootstrapAddress}")
+    @Value("${spring.kafka.producer.bootstrap-servers}")
     private String bootstrapAddress;
 
-    @Value("${kafka.topic}")
+    @Value("${stock.kafka.topic}")
     private String topic;
 
     @Bean
@@ -31,6 +31,6 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic stockDataTopic() {
-        return new NewTopic(topic, 1, (short) 1);
+        return new NewTopic(topic, 4, (short) 1);
     }
 }

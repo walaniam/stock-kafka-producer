@@ -15,9 +15,12 @@ import java.io.File;
 @Configuration
 public class AppConfig {
 
+    @Value("${stock.kafka.topic}")
+    private String eventsTopic;
+
     @Bean
     public EventsSender<Stock> stockEventsSender(KafkaTemplate<String, Stock> template) {
-        return EventsSender.of(template, StockEventKeyFunction.of());
+        return EventsSender.of(template, eventsTopic, StockEventKeyFunction.of());
     }
 
     @Bean
