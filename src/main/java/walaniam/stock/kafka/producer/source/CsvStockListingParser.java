@@ -57,14 +57,17 @@ public class CsvStockListingParser {
     private void parseListing(BufferedReader reader) throws IOException {
         String line;
         int lineCount = 0;
+        String ticker = null;
+        String previousTicker = null;
         while ((line = reader.readLine()) != null) {
             if (++lineCount == 1) {
                 continue;
             }
             try {
                 String[] columns = line.split(",");
+                ticker = columns[0].trim().intern();
                 Stock stock = Stock.builder()
-                        .ticker(columns[0].trim().intern())
+                        .ticker(ticker)
                         .timestamp(parseDate(columns[1]))
                         .openPrice(Float.parseFloat(columns[2].trim()))
                         .highestPrice(Float.parseFloat(columns[3].trim()))
@@ -73,13 +76,25 @@ public class CsvStockListingParser {
                         .volume(Float.parseFloat(columns[6].trim()))
                         .build();
 
+                if (previousTicker != null && !previousTicker.equals(ticker)) {
+                    log.info("Ticker changed. Sending end pill of '{}'", previousTicker);
+                    consumer.accept(Stock.endPillOf(previousTicker));
+                }
+
                 consumer.accept(stock);
+
+                previousTicker = ticker;
 
             } catch (ArrayIndexOutOfBoundsException e) {
                 log.warn("Failed to parse line '" + line + "' " + e);
             } catch (Exception e) {
                 log.warn("Failed to parse line '" + line + "' " + e);
             }
+        }
+
+        if (ticker != null) {
+            log.info("Sending end pill of '{}'", ticker);
+            consumer.accept(Stock.endPillOf(ticker));
         }
     }
 

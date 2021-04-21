@@ -11,6 +11,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class Stock {
 
+    private static final String END_PILL = "__END_PILL";
+
     private final String ticker;
     private final long timestamp;
     private final float openPrice;
@@ -21,5 +23,12 @@ public class Stock {
 
     public float getTypicalPrice() {
         return (closePrice + highestPrice + lowestPrice) / 3;
+    }
+
+    public static Stock endPillOf(String ticker) {
+        return Stock.builder()
+                .ticker(ticker + END_PILL)
+                .timestamp(System.currentTimeMillis())
+                .build();
     }
 }
