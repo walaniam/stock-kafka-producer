@@ -21,10 +21,6 @@ public class Stock {
     private final float highestPrice;
     private final float volume;
 
-    public float getTypicalPrice() {
-        return (closePrice + highestPrice + lowestPrice) / 3;
-    }
-
     public static Stock endPillOf(String ticker) {
         return Stock.builder()
                 .ticker(ticker + END_PILL)
