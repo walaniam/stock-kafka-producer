@@ -1,6 +1,7 @@
 package walaniam.stock.kafka.producer.source;
 
 
+import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.Test;
 import walaniam.stock.domain.Stock;
 
@@ -26,13 +27,11 @@ public class CsvStockListingParserTest {
 
         underTest.parse(new ByteArrayInputStream(DATA.getBytes(StandardCharsets.UTF_8)));
 
-        assertThat(stocks).hasSize(3);
+        assertThat(stocks).hasSize(4);
 
-        Stock last = stocks.stream()
-                .reduce((a, b) -> b)
-                .orElseThrow();
+        Stock lastStock = stocks.get(2);
 
-        assertThat(last).isEqualTo(
+        assertThat(lastStock).isEqualTo(
                 Stock.builder()
                         .ticker("ALIOR")
                         .timestamp(1355788800000L)
@@ -43,5 +42,9 @@ public class CsvStockListingParserTest {
                         .volume(390101)
                         .build()
         );
+
+        Stock endPill = stocks.get(3);
+        assertThat(endPill.getTicker()).isEqualTo("ALIOR__END_PILL");
+        assertThat(endPill.getTimestamp()).isCloseTo(System.currentTimeMillis(), Percentage.withPercentage(0.99));
     }
 }
