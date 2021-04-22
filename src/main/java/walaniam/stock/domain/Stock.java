@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import static org.apache.commons.lang3.StringUtils.substringBefore;
+
 @Builder
 @Getter
 @ToString(of = {"ticker", "date"})
@@ -26,5 +28,16 @@ public class Stock {
                 .ticker(ticker + END_PILL)
                 .timestamp(System.currentTimeMillis())
                 .build();
+    }
+
+    public static boolean isEndPill(Stock stock) {
+        return stock.ticker.endsWith(END_PILL);
+    }
+
+    public static String endPillTickerOf(Stock stock) {
+        if (isEndPill(stock)) {
+            return substringBefore(stock.ticker, END_PILL);
+        }
+        throw new IllegalArgumentException(stock.ticker + " is not an end pill");
     }
 }

@@ -6,6 +6,9 @@ import walaniam.stock.domain.Stock;
 
 import java.util.function.Function;
 
+import static walaniam.stock.domain.Stock.endPillTickerOf;
+import static walaniam.stock.domain.Stock.isEndPill;
+
 @RequiredArgsConstructor
 public class StockPartitionFunction implements Function<Stock, Integer> {
 
@@ -13,7 +16,7 @@ public class StockPartitionFunction implements Function<Stock, Integer> {
 
     @Override
     public Integer apply(Stock stock) {
-        String ticker = stock.getTicker();
+        String ticker = isEndPill(stock) ? endPillTickerOf(stock) : stock.getTicker();
         return Utils.toPositive(Utils.murmur2(ticker.getBytes())) % partitions;
     }
 }
