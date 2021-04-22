@@ -19,6 +19,9 @@ public class KafkaTopicConfig {
     @Value("${stock.kafka.topic}")
     private String topic;
 
+    @Value("${stock.kafka.partitions}")
+    private int partitions;
+
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = ImmutableMap.of(
@@ -31,6 +34,6 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic stockDataTopic() {
-        return new NewTopic(topic, 4, (short) 1);
+        return new NewTopic(topic, partitions, (short) 1);
     }
 }

@@ -12,13 +12,15 @@ import java.util.function.Function;
 public class EventsSender<T> implements Consumer<T> {
 
     private final KafkaTemplate<String, T> kafkaTemplate;
-    private String eventsTopic;
+    private final String eventsTopic;
     private final Function<T, String> keyFunction;
+    private final Function<T, Integer> partitionFunction;
 
     @Override
     public void accept(T event) {
         String key = keyFunction.apply(event);
-        log.debug("Sending {}", key);
-        kafkaTemplate.send(eventsTopic, key, event);
+        int partition = partitionFunction.apply(event);
+        log.debug("Sending {} on partition {}", key, partition);
+        kafkaTemplate.send(eventsTopic, partition, key, event);
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaTemplate;
 import walaniam.stock.domain.Stock;
+import walaniam.stock.kafka.producer.StockPartitionFunction;
 import walaniam.stock.kafka.producer.source.CsvStockListingParser;
 import walaniam.stock.kafka.producer.source.EventsSender;
 import walaniam.stock.kafka.producer.source.FileLoader;
@@ -18,9 +19,18 @@ public class AppConfig {
     @Value("${stock.kafka.topic}")
     private String eventsTopic;
 
+    @Value("${stock.kafka.partitions}")
+    private int partitions;
+
     @Bean
-    public EventsSender<Stock> stockEventsSender(KafkaTemplate<String, Stock> template) {
-        return EventsSender.of(template, eventsTopic, StockEventKeyFunction.of());
+    public StockPartitionFunction stockPartitionFunction() {
+        return new StockPartitionFunction(partitions);
+    }
+
+    @Bean
+    public EventsSender<Stock> stockEventsSender(KafkaTemplate<String, Stock> template,
+                                                 StockPartitionFunction stockPartitionFunction) {
+        return EventsSender.of(template, eventsTopic, StockEventKeyFunction.of(), stockPartitionFunction);
     }
 
     @Bean
