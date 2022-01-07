@@ -17,7 +17,7 @@
 	<description>Parses stock listing and produces kafka events</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<logback.version>1.2.3</logback.version>
