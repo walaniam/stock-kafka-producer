@@ -1,6 +1,5 @@
 package walaniam.stock.kafka.producer.source;
 
-
 import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.Test;
 import walaniam.stock.domain.Stock;
@@ -14,10 +13,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CsvStockListingParserTest {
 
-    private static final String DATA = "<TICKER>,<DTYYYYMMDD>,<OPEN>,<HIGH>,<LOW>,<CLOSE>,<VOL>\n" +
-            "ALIOR,20121214,59.5000,61.8000,59.5000,60.9000,3035630\n" +
-            "ALIOR,20121217,60.0500,61.5000,60.0500,61.2500,206878\n" +
-            "ALIOR,20121218,61.8000,62.4000,61.5000,62.2500,390101";
+    private static final String DATA = """
+                <TICKER>,<DTYYYYMMDD>,<OPEN>,<HIGH>,<LOW>,<CLOSE>,<VOL>
+                ALIOR,20121214,59.5000,61.8000,59.5000,60.9000,3035630
+                ALIOR,20121217,60.0500,61.5000,60.0500,61.2500,206878
+                ALIOR,20121218,61.8000,62.4000,61.5000,62.2500,390101
+    """;
 
     @Test
     public void parse() {
